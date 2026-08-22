@@ -2,4 +2,4 @@ node_modules/
 .env
 .env.local
 dist/
-build/git
+build/
