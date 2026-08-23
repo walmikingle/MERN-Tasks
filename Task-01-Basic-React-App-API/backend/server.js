@@ -1,37 +1,39 @@
+const Product = require("./models/Product");
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
-const products = [
-  {
-    name: "Laptop",
-    price: 55000,
-    category: "Electronics",
-  },
 
-  {
-    name: "Wireless Mouse",
-    price: 1200,
-    category: "Accessories",
-  },
+app.get("/api/products", async (req,res) => {
+  try {
+    const products = await Product.find() ;
 
-   {
-    name: "Mechanical Keyboard",
-    price: 2399,
-    category: "Accessories",
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to Fetch Products",
+    });
   }
-]
-
-
-app.get("/",(req,res)=> {
-  res.send("Mern backend is Running");
 });
 
-app.get("/api/products", (req,res)=> {
-  res.json(products);
+// app.get("/api/products", (req,res)=> {
+//   res.json(products);
+// });
+
+app.post("/api/products", async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to Create Product",
+      error: error.message,
+    });
+  }
 });
 
 
@@ -41,7 +43,7 @@ mongoose
   .then(() => {
     console.log("MongoDB Connected Successfully");
     app.listen(PORT,() => {
-  console.log(`Server running on https://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
   })
 
